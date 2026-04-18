@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Engineering OS | Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #000; --card: #0a0a0a; --border: #1f1f1f; --text: #ededed; --muted: #71717a; --accent: #fff; --success: #22c55e; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        #modal-login { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: 12px; width: 340px; }
+        
+        .container { width: 100%; max-width: 1200px; padding: 60px 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
+        
+        /* Card Styles */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; transition: 0.4s; display: flex; flex-direction: column; position: relative; }
+        
+        /* Criticidade Cores */
+        .card.assumido.Normal { border-top: 3px solid #3b82f6; }
+        .card.assumido.Alta { border-top: 3px solid #f59e0b; }
+        .card.assumido.Crítica { border-top: 3px solid #ef4444; }
+
+        /* ESTADO RESOLVIDO (O Pulo do Gato) */
+        .card.resolvido { 
+            opacity: 0.6; 
+            border-top: 3px solid var(--border) !important; 
+            filter: grayscale(0.5);
+            background: rgba(255,255,255,0.02);
+        }
+        .card.resolvido .status-pill { background: var(--success); color: #000; }
+        .card.resolvido .bug-title { text-decoration: line-through; color: var(--muted); }
+
+        .status-pill { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: var(--border); text-transform: uppercase; }
+        .bug-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+        .bug-title { font-size: 18px; font-weight: 600; margin: 12px 0; letter-spacing: -0.02em; transition: 0.3s; }
+
+        .log-container { background: #000; border-radius: 6px; height: 140px; overflow-y: auto; margin: 15px 0; padding: 10px; border: 1px solid #141414; font-size: 12px; }
+        .log-entry { margin-bottom: 6px; color: var(--muted); }
+        .log-entry b { color: var(--text); }
+        .log-sys { color: #3f3f46; font-size: 11px; }
+
+        input { background: #111; border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 6px; width: 100%; outline: none; font-size: 13px; }
+        button { cursor: pointer; background: var(--accent); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: 600; margin-top: 10px; }
+        
+        .controls { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+        select { background: #111; color: #fff; border: 1px solid var(--border); padding: 5px; border-radius: 4px; font-size: 11px; }
+    </style>
+</head>
+<body>
+
+    <div id="modal-login">
+        <div class="login-card">
+            <h2 style="font-weight:400; margin-top:0">Engenharia OS</h2>
+            <input type="text" id="uname" placeholder="Nome do Especialista" style="margin-bottom:10px">
+            <select id="urole" style="width:100%; padding:10px; font-size:14px; margin-bottom:20px">
+                <option value="Dev">Software Engineer</option>
+                <option value="QA">QA Engineer</option>
+                <option value="SRE">SRE / Ops</option>
+            </select>
+            <button onclick="login()" style="width:100%">Autenticar</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="grid" class="grid"></div>
+    </div>
+
+    <script>
+        let me, role, ws;
+
+        function login() {
+            me = document.getElementById('uname').value;
+            role = document.getElementById('urole').value;
+            if(!me) return;
+            document.getElementById('modal-login').style.display = 'none';
+            ws = new WebSocket(`ws://${location.host}/ws`);
+            ws.onmessage = (e) => {
+                const res = JSON.parse(e.data);
+                if(res.type === 'sync') render(res.data);
+            };
+        }
+
+        function render(data) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = Object.entries(data).map(([id, d]) => {
+                const isAssumido = d.responsavel !== null;
+                const isResolvido = d.status === 'Resolvido';
+                const isMe = d.responsavel === me;
+
+                return `
+                <div class="card ${isAssumido ? 'assumido ' + d.gravidade : ''} ${isResolvido ? 'resolvido' : ''}">
+                    <div style="display:flex; justify-content:space-between; align-items:center">
+                        <span class="bug-id">${id}</span>
+                        ${isAssumido ? `<span class="status-pill">${d.status}</span>` : ''}
+                    </div>
+                    <div class="bug-title">${d.titulo}</div>
+                    <div style="font-size:12px; color:var(--muted)">
+                        ${isAssumido ? `Owner: <b>${d.responsavel}</b>` : '<i>Aguardando...</i>'}
+                    </div>
+
+                    ${!isAssumido ? 
+                        `<button onclick="send('assumir','${id}')">Assumir Ticket</button>` : `
+                        <div class="log-container">
+                            ${d.logs.map(l => `<div class="log-entry ${l.u==='SISTEMA'?'log-sys':''}">
+                                ${l.u!=='SISTEMA'?`<b>${l.u}:</b> `:''}${l.m}</div>`).join('')}
+                        </div>
+                        
+                        ${!isResolvido ? `
+                            <input type="text" placeholder="Update log..." onkeypress="if(event.key==='Enter'){ log('${id}', this) }">
+                            ${isMe ? `
+                                <div class="controls">
+                                    <select onchange="setG('${id}', this.value)">
+                                        <option selected disabled>Prioridade</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Alta">Alta</option>
+                                        <option value="Crítica">Crítica</option>
+                                    </select>
+                                    <button onclick="setS('${id}')" style="margin:0; padding:5px 10px; font-size:11px">Resolver</button>
+                                </div>
+                            ` : ''}
+                        ` : `<div style="text-align:center; color:var(--success); font-size:11px; font-weight:bold">COMPLETADO</div>`}
+                    `}
+                </div>
+            `}).join('');
+            document.querySelectorAll('.log-container').forEach(c => c.scrollTop = c.scrollHeight);
+        }
+
+        function send(type, id) { ws.send(JSON.stringify({type, id, user: me, role})); }
+        function setG(id, gravidade) { ws.send(JSON.stringify({type: 'set_gravidade', id, gravidade, user: me})); }
+        function setS(id) { ws.send(JSON.stringify({type: 'status', id})); }
+        function log(id, el) { if(el.value){ ws.send(JSON.stringify({type: 'log', id, user: me, text: el.value})); el.value = ''; } }
+    </script>
+</body>
+</html>
