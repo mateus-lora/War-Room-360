@@ -18,6 +18,7 @@ function PageInicial() {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autocomplete="off"
         />
 <select 
         id="userRole" 

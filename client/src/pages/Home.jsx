@@ -6,7 +6,7 @@ function Home() {
   const ws = useRef(null);
   
   // Pegamos os dados do usuário uma única vez
-  const me = localStorage.getItem("userName") || "User";
+  const me = localStorage.getItem("userName")
   const role = localStorage.getItem("userRole") || "Dev";
 
   useEffect(() => {
@@ -21,8 +21,8 @@ function Home() {
   // Centralizador de ações para passar para os filhos
   const actions = {
     assumir: (id) => ws.current.send(JSON.stringify({ type: 'assumir', id, user: me, role })),
-    setG: (id, gravidade) => ws.current.send(JSON.stringify({ type: 'set_gravidade', id, gravidade, user: me })),
-    setS: (id) => ws.current.send(JSON.stringify({ type: 'status', id })),
+    setGravity: (id, gravidade) => ws.current.send(JSON.stringify({ type: 'set_gravidade', id, gravidade, user: me })),
+    setStatus: (id) => ws.current.send(JSON.stringify({ type: 'status', id })),
     log: (id, text) => text && ws.current.send(JSON.stringify({ type: 'log', id, user: me, text }))
   };
 

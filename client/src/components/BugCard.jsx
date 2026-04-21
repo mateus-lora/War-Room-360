@@ -50,14 +50,14 @@ const BugCard = ({ id, data, currentUser, actions }) => {
                 <div className="controls">
                   <select 
                     value={gravidade || ""} 
-                    onChange={(e) => actions.setG(id, e.target.value)}
+                    onChange={(e) => actions.setGravity(id, e.target.value)}
                   >
                     <option value="" disabled>Prioridade ∨</option>
                     <option value="Normal">Normal</option>
                     <option value="Alta">Alta</option>
                     <option value="Crítica">Crítica</option>
                   </select>
-                  <button className="btn-resolve" onClick={() => actions.setS(id)}>
+                  <button className="btn-resolve" onClick={() => actions.setStatus(id)}>
                     Resolver
                   </button>
                 </div>
