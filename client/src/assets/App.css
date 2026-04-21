@@ -1,0 +1,276 @@
+/* --- CONFIGURAÇÕES TEMA DARK --- */
+:root {
+  --bg: #050505;
+  --card-bg: #0a0a0a;
+  --border: #1f1f1f;
+  --text-main: #ededed;
+  --text-muted: #71717a;
+  --accent: #ffffff;
+}
+
+/* Reset Global */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  /* Não use flex aqui no body, use no wrapper abaixo */
+}
+
+/* --- ESTILO TELA DE LOGIN --- */
+
+/* Centraliza o card apenas na tela de login */
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* O Card de Login */
+.login-wrapper section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+.login-wrapper h1 {
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Inputs e Selects */
+.login-wrapper input, 
+.login-wrapper select {
+  background: #111;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.login-wrapper input:focus, 
+.login-wrapper select:focus {
+  border-color: #444;
+  background: #151515;
+}
+
+/* Botão de Entrada */
+.login-wrapper button {
+  padding: 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 10px;
+}
+
+/* Botão Ativo */
+.login-wrapper button:not([disabled]) {
+  background-color: var(--accent);
+  color: #000;
+}
+
+.login-wrapper button:not([disabled]):hover {
+  transform: translateY(-2px);
+  background-color: #e5e5e5;
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Botão Desativado */
+.login-wrapper button[disabled] {
+  background-color: #1a1a1a;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Estilo para placeholder de select */
+select:invalid, select[value=""] {
+  color: var(--text-muted);
+}
+
+/* --- DASHBOARD / HOME --- */
+.dashboard-container {
+  padding: 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.header-warroom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+}
+
+.user-badge {
+  font-size: 14px;
+  color: var(--text-muted);
+  background: #111;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+/* --- GRID DE CARDS --- */
+.bug-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+/* --- O CARD (ESTILO REFERÊNCIA) --- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: transform 0.2s ease;
+  min-height: 380px;
+}
+
+/* Cores no TOPO do card conforme a prioridade */
+.card.Normal { border-top: 4px solid var(--priority-normal); }
+.card.Alta { border-top: 4px solid var(--priority-alta); }
+.card.Crítica { border-top: 4px solid var(--priority-critica); }
+.card.resolvido { border-top: 4px solid var(--priority-success); opacity: 0.7; }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bug-id {
+  font-family: monospace;
+  color: #444;
+  font-size: 12px;
+}
+
+.status-pill {
+  background: #1a1a1a;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.bug-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.owner-info {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* --- LOGS (ESTILO TERMINAL) --- */
+.log-container {
+  background: #050505;
+  border: 1px solid #111;
+  border-radius: 6px;
+  padding: 12px;
+  height: 130px;
+  overflow-y: auto;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.log-entry b { color: #fff; }
+.log-sys { color: #555; font-style: italic; }
+
+/* --- AÇÕES DO CARD --- */
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.card-actions input {
+  background: #0d0d0d;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.controls select {
+  background: #000;
+  color: #fff;
+  border: 1px solid #333;
+  padding: 8px;
+  border-radius: 4px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.btn-resolve {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-assumir {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.completado-badge {
+  text-align: center;
+  color: var(--priority-success);
+  font-weight: bold;
+  font-size: 12px;
+  padding: 10px;
+  letter-spacing: 2px;
+}
