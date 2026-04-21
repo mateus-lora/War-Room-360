@@ -130,6 +130,7 @@ select:invalid, select[value=""] {
 }
 
 .user-badge {
+  display: flex;
   font-size: 14px;
   color: var(--text-muted);
   background: #111;

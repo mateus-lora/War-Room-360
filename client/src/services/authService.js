@@ -2,9 +2,10 @@ export const handleLogin = (name, profissao, navigate) => {
   if (!name || !profissao) return;
 
 const ws = new WebSocket(`ws://localhost:8888/ws`);
-localStorage.setItem("userName", name);
-  localStorage.setItem("userRole", profissao);
-  
+sessionStorage.setItem("userName", name);
+  sessionStorage.setItem("userRole", profissao);
+  sessionStorage.setItem('user_authenticated', 'true');
+
   ws.onopen = () => {
     console.log("Conectado à War Room!");
     ws.send(JSON.stringify({ 

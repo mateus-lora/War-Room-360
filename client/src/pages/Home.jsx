@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import "../assets/App.css";
 import BugCard from "../components/BugCard.jsx";
+import StatusIndicator from "../components/StatusIndicator.jsx";
 function Home() {
   const [defeitos, setDefeitos] = useState({});
   const ws = useRef(null);
   
   // Pegamos os dados do usuário uma única vez
-  const me = localStorage.getItem("userName")
-  const role = localStorage.getItem("userRole") || "Dev";
+  const me = sessionStorage.getItem("userName")
+  const role = sessionStorage.getItem("userRole") || "Dev";
 
   useEffect(() => {
     ws.current = new WebSocket(`ws://localhost:8888/ws`);
@@ -30,7 +31,9 @@ function Home() {
     <div className="dashboard-container">
       <header className="header-warroom">
         <h1>War Room 360</h1>
-        <div className="user-badge">{me} ({role})</div>
+        <div className="user-badge">
+          <StatusIndicator />
+          <div>{me} ({role})</div></div>
       </header>
 
       <div className="bug-grid">
