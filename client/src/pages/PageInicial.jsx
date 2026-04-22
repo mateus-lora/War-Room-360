@@ -26,9 +26,14 @@ function PageInicial() {
         onChange={(e) => setProfissao(e.target.value)}
       >
         <option value="" disabled hidden>Selecione sua profissão</option>
-        <option value="Dev">Software Engineer</option>
-        <option value="QA">QA Engineer</option>
-        <option value="SRE">SRE / Ops</option>
+          <option value="QA">QA</option>
+          <option value="Software Engineer">Software Engineer</option>
+          <option value="SRE">SRE</option>
+          <option value="Product Manager">Product Manager</option>
+          <option value="Tech Lead">Tech Lead</option>
+          <option value="Security Engineer">Security Engineer</option>
+          <option value="Customer Support">Customer Support</option>
+          <option value="DBA">DBA</option>
       </select>
 
 <button disabled={!name || !profissao} onClick={() => handleLogin(name, profissao, navigate)}>

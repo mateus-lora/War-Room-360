@@ -6,6 +6,12 @@
   --text-main: #ededed;
   --text-muted: #71717a;
   --accent: #ffffff;
+  
+  /* Cores de Prioridade Adicionadas */
+  --priority-normal: #3498db;
+  --priority-alta: #e67e22;
+  --priority-critica: #e74c3c;
+  --priority-success: #2ecc71;
 }
 
 /* Reset Global */
@@ -273,4 +279,124 @@ select:invalid, select[value=""] {
   font-size: 12px;
   padding: 10px;
   letter-spacing: 2px;
+}
+
+/* ========================================================= */
+/* --- NOVOS ESTILOS ADICIONADOS (Criação, Chat e Badges) --- */
+/* ========================================================= */
+
+/* Painel de criação de bugs */
+.create-panel {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.create-panel input {
+  flex: 1;
+  background: #111;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 12px 16px;
+  border-radius: 6px;
+  outline: none;
+}
+
+.create-panel button {
+  padding: 0 24px;
+  background-color: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.create-panel button:hover { opacity: 0.8; }
+
+/* Grupo de chat no BugCard */
+.chat-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input-group input {
+  flex: 1;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.btn-send {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 0 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-send:not([disabled]):hover { background: #555; }
+.btn-send[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* Wrapper para o ID e Badge de Prioridade */
+.id-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.priority-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #222;
+  color: #aaa;
+  border: 1px solid #444;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.online-badge {
+  background: rgba(0, 255, 0, 0.1);
+  color: #2ecc71;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: #2ecc71;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  box-shadow: 0 0 8px #2ecc71;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
 }

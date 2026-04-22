@@ -1,9 +1,10 @@
 export const handleLogin = (name, profissao, navigate) => {
   if (!name || !profissao) return;
 
-const ws = new WebSocket(`ws://localhost:8888/ws`);
-localStorage.setItem("userName", name);
-  localStorage.setItem("userRole", profissao);
+  const ws = new WebSocket(`ws://localhost:8888/ws`);
+  
+  sessionStorage.setItem("userName", name);
+  sessionStorage.setItem("userRole", profissao);
   
   ws.onopen = () => {
     console.log("Conectado à War Room!");
@@ -13,7 +14,6 @@ localStorage.setItem("userName", name);
       role: profissao 
     }));
     
-    // Mudei para cá para o redirecionamento ser instantâneo após conectar
     navigate("/home"); 
   };
 

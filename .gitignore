@@ -1,0 +1,25 @@
+# ========================
+# BANCO DE DADOS LOCAL
+# ========================
+defeitos_v6.json
+
+# ========================
+# AMBIENTES VIRTUAIS (Onde o Tornado foi instalado)
+# ========================
+venv/
+.venv/
+env/
+
+# ========================
+# CACHE DO PYTHON
+# ========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ========================
+# EDITORES E SISTEMA OPERACIONAL
+# ========================
+.vscode/
+.DS_Store
