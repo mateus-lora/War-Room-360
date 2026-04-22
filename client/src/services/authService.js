@@ -5,6 +5,7 @@ export const handleLogin = (name, profissao, navigate) => {
   
   sessionStorage.setItem("userName", name);
   sessionStorage.setItem("userRole", profissao);
+  sessionStorage.setItem("user_authenticated", "true"); // NOVO: Flag de autenticação
   
   ws.onopen = () => {
     console.log("Conectado à War Room!");
@@ -21,4 +22,4 @@ export const handleLogin = (name, profissao, navigate) => {
     console.error("Erro na conexão:", err);
     alert("Não foi possível conectar ao servidor Python!");
   };
-}
+};

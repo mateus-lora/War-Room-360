@@ -400,3 +400,11 @@ select:invalid, select[value=""] {
   50% { opacity: 0.4; }
   100% { opacity: 1; }
 }
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  background: #111;
+}

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/App.css";
 import BugCard from "../components/BugCard.jsx";
+import StatusIndicator from "../components/StatusIndicator.jsx"; // NOVO: Importando o componente
 
 function Home() {
   const [defeitos, setDefeitos] = useState({});
@@ -78,7 +79,12 @@ function Home() {
             <span className="dot"></span> {onlineCount} Online
           </div>
         </div>
-        <div className="user-badge">{me} ({role})</div>
+        
+        {/* NOVO: StatusIndicator adicionado dentro do user-badge */}
+        <div className="user-badge">
+          <StatusIndicator />
+          <div>{me} ({role})</div>
+        </div>
       </header>
 
       {/* Painel de criação de Tickets */}
