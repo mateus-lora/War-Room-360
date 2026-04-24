@@ -5,7 +5,7 @@ export const handleLogin = (name, profissao, navigate) => {
   
   sessionStorage.setItem("userName", name);
   sessionStorage.setItem("userRole", profissao);
-  sessionStorage.setItem("user_authenticated", "true"); // NOVO: Flag de autenticação
+  sessionStorage.setItem("user_authenticated", "true");
   
   ws.onopen = () => {
     console.log("Conectado à War Room!");

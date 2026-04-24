@@ -5,7 +5,7 @@ Este trabalho prático tem como objetivo demonstrar uma aplicação de comunica�
 O sistema atua como um painel ao vivo ("War Room") para triagem, investigação e resolução de defeitos/bugs de forma colaborativa.
 
 ## Integrantes do Grupo
-- Mateus Lora - RA
+- Mateus Lora - RA 1136218
 - Gabriel Hanel - RA 1135926
 
 ## Tecnologias Utilizadas
