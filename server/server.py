@@ -2,12 +2,12 @@ import tornado.ioloop, tornado.web, tornado.websocket, json, os
 
 DATA_FILE = "defeitos_v6.json"
 
-def load_data():
+def load_tickets_from_storage():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f: return json.load(f)
     return {}
 
-app_state = load_data()
+app_state = load_tickets_from_storage()
 # Alterado: Agora clients é um dicionário {objeto_conexao: "nome_usuario"}
 clients = {}
 
@@ -31,12 +31,12 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         action = msg.get("type")
 
         handlers = {
-            "assumir": self.handle_assumir,
-            "set_gravidade": self.handle_set_gravidade,
-            "log": self.handle_log,
-            "status": self.handle_status,
-            "create": self.handle_create,
-            "login": self.handle_login 
+            "assumir": self.assign_ticket_to_user,
+            "set_gravidade": self.update_ticket_priority,
+            "log": self.add_comment_to_ticket,
+            "status": self.resolve_ticket,
+            "create": self.create_new_ticket,
+            "login": self.register_user_session 
         }
 
         handler = handlers.get(action)
@@ -48,7 +48,7 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
             print(f"Ação desconhecida recebida: {action}")
 
     # --- Handlers de Ações ---
-    def handle_login(self, msg):
+    def register_user_session(self, msg):
         nome = msg.get("user", "Desconhecido")
         # Associa o nome à conexão atual
         clients[self] = nome
@@ -56,7 +56,7 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         # Só dispara a contagem de usuários únicos DEPOIS do login
         self.broadcast_online_count()
 
-    def handle_create(self, msg):
+    def create_new_ticket(self, msg):
         new_id = f"D-{len(app_state) + 101}"
         app_state[new_id] = {
             "titulo": msg["titulo"],
@@ -67,20 +67,20 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
             "logs": [{"u": "SISTEMA", "m": f"Ticket criado por {msg['user']}"}]
         }
 
-    def handle_assumir(self, msg):
+    def assign_ticket_to_user(self, msg):
         bid = msg["id"]
         app_state[bid].update({"responsavel": msg["user"], "cargo": msg["role"], "status": "Em analise"})
         app_state[bid]["logs"].append({"u": "SISTEMA", "m": f"Investigacao iniciada por {msg['user']}"})
 
-    def handle_set_gravidade(self, msg):
+    def update_ticket_priority(self, msg):
         bid = msg["id"]
         app_state[bid]["gravidade"] = msg["gravidade"]
         app_state[bid]["logs"].append({"u": "SISTEMA", "m": f"Prioridade definida para: {msg['gravidade']}"})
 
-    def handle_log(self, msg):
+    def add_comment_to_ticket(self, msg):
         app_state[msg["id"]]["logs"].append({"u": msg["user"], "m": msg["text"]})
 
-    def handle_status(self, msg):
+    def resolve_ticket(self, msg):
         bid = msg["id"]
         app_state[bid]["status"] = "Resolvido"
         app_state[bid]["logs"].append({"u": "SISTEMA", "m": "Ticket encerrado - Solucionado."})
