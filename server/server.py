@@ -8,14 +8,12 @@ def load_tickets_from_storage():
     return {}
 
 app_state = load_tickets_from_storage()
-# Alterado: Agora clients é um dicionário {objeto_conexao: "nome_usuario"}
 clients = {}
 
 class DefeitosHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin): return True
     
     def open(self): 
-        # Inicializa a conexão sem nome definido ainda
         clients[self] = None
         self.write_message(json.dumps({"type": "sync", "data": app_state}))
         print(f"[+] Nova conexão estabelecida. Total de abas: {len(clients)}")
@@ -47,13 +45,10 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         else:
             print(f"Ação desconhecida recebida: {action}")
 
-    # --- Handlers de Ações ---
     def register_user_session(self, msg):
         nome = msg.get("user", "Desconhecido")
-        # Associa o nome à conexão atual
         clients[self] = nome
-        print(f"[👤] {nome} entrou na sala.")
-        # Só dispara a contagem de usuários únicos DEPOIS do login
+        print(f"{nome} entrou na sala.")
         self.broadcast_online_count()
 
     def create_new_ticket(self, msg):
@@ -85,17 +80,14 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         app_state[bid]["status"] = "Resolvido"
         app_state[bid]["logs"].append({"u": "SISTEMA", "m": "Ticket encerrado - Solucionado."})
 
-    # --- Utilitários ---
     def save_and_sync(self):
         with open(DATA_FILE, "w") as f: json.dump(app_state, f)
         for c in clients: c.write_message(json.dumps({"type": "sync", "data": app_state}))
 
     def broadcast_online_count(self):
-        # Lógica principal: Filtra os nomes, remove None e conta apenas nomes ÚNICOS
         usuarios_unicos = {name for name in clients.values() if name is not None}
         count = len(usuarios_unicos)
         
-        # Se alguém conectou mas ainda não logou, garantimos que mostre pelo menos 1
         if count == 0 and len(clients) > 0:
             count = 1
             
