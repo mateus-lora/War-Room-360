@@ -1,4 +1,5 @@
 import tornado.ioloop, tornado.web, tornado.websocket, json, os
+import aiofiles
 
 DATA_FILE = "defeitos_v6.json"
 
@@ -24,7 +25,7 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         self.broadcast_online_count()
         print(f"[-] Conexão fechada. Total de abas: {len(clients)}")
 
-    def on_message(self, message):
+    async def on_message(self, message):
         msg = json.loads(message)
         action = msg.get("type")
 
@@ -41,7 +42,7 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         if handler:
             handler(msg)
             if action != "login":
-                self.save_and_sync()
+                await self.save_and_sync()
         else:
             print(f"Ação desconhecida recebida: {action}")
 
@@ -80,9 +81,12 @@ class DefeitosHandler(tornado.websocket.WebSocketHandler):
         app_state[bid]["status"] = "Resolvido"
         app_state[bid]["logs"].append({"u": "SISTEMA", "m": "Ticket encerrado - Solucionado."})
 
-    def save_and_sync(self):
-        with open(DATA_FILE, "w") as f: json.dump(app_state, f)
-        for c in clients: c.write_message(json.dumps({"type": "sync", "data": app_state}))
+    async def save_and_sync(self):
+        async with aiofiles.open(DATA_FILE, "w") as f: 
+            await f.write(json.dumps(app_state))
+            
+        for c in clients: 
+            c.write_message(json.dumps({"type": "sync", "data": app_state}))
 
     def broadcast_online_count(self):
         usuarios_unicos = {name for name in clients.values() if name is not None}
